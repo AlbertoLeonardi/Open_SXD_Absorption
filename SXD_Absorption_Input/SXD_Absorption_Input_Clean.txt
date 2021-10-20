@@ -1,0 +1,131 @@
+Single Crystal Absorption Tool
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+|||||||||| SOFTWARE RUN SETUP ||||||||||	|||||||||| |||||||||| |||||||||| |||||||||| ||||||||||	//
+
+@ Random Generator Seed Numbers        :	[0 0]							// Pair of integer values (Software preinitialization)
+@ Number of CPU threads to use         :	[16]							// if you don't know check with 'htop' (linux) or 'task-manager' (windows) for how many effective CPU your pc has
+
+||||||||||  GENERAL SETTINGS  ||||||||||
+
+@ Output (working) base directory path :	[D:]
+@ Output (working) base file root name :	[Name]
+
+@ Import crystal shape from STL file   :	[y][0]							// y/n. STL file type (either binary or ascii), Rotation axes shift from camera focus (i.e., center of the images) (pixels)
+@ Ignore shape save and mesh match     :	[y]							// y/n.
+
+@ Break after Step Frame-Sequence      :	[n]							// Use while setting up filters
+@ Break after Polygon Frame-Sequence   :	[n]							// Use while setting up shape-detection
+
+|||||||||| 360 FRAME SEQUENCE ||||||||||	|||||||||| |||||||||| |||||||||| |||||||||| ||||||||||	//
+
+@ Use Preprocessed Sequence (y/n)      :	[y]							// Restart with preprocessed images/filters
+
+@ Image-Sequence file directory path   :	[D:]
+@ Image-Sequence file name             :	[Name]"_"[0000].bmp					// Root Name : Separation token : as many '0' as minimum digits (note: token and digits number are ignored if the image-sequence was preprocessed)
+
+@ Image-Sequence revolution step-id    :	[0 - 180]						// Image angle setp Id at 0° and 360°
+@ Image-Sequence revolution frame-id   :	[0 - 2952]						// Image image file Id at 0° and 360°
+
+@ Image-Sequence revolution angle error:	[0]°							// Angle Error at 360° (step-motor)
+
+||||||||||  IMAGE  FILTERING  ||||||||||	|||||||||| |||||||||| |||||||||| |||||||||| ||||||||||	//	
+
+@ Use Prefiltered Sequence             :	[n] [D:]/[Name]_#.bmp _#.bin				// directory path and file names are used only in case of prefiltered images
+
+@ Image-Sequence RGB mask color        :	[0, 255, 0] [60.0]%					// RGB color | Transparancy (%)
+@ Image-Sequence Mask & Filters overlap:	[y]							// y/n. overlap the mask to the (y) filtered image or to the (n) source image
+
+---- ---- ---- ----  ---- ---- ---- ----	FILTERS'LIST TO APPLY					// See at the bottom for the possible MSK functions	
+
+@ MSK: image-filter identity                :	-
+
+---- ---- ---- ----  ---- ---- ---- ----	END OF THE FILTERS'LIST
+
+|||||||||| 3D SHAPE DETECTION ||||||||||	|||||||||| |||||||||| |||||||||| |||||||||| ||||||||||	//
+
+@ Image-Sequence shape RGB mask color       :	[0, 0, 255]
+
+@ Image pixel size (mm)                     :	1/[150]pixels
+@ Camera focal distance (mm)                :	[0.0]							// negative or 0.0 are assumed to be infinite
+@ Image Rotation-Axes autodetection (pixels):	[n][0]pixels						// y/n. apply autodetection | assume extra/absolute shift (i.e., added to autodetection center)
+
+@ Shape-Mesh STL file type                  :	[ASCII]							// ASCII(default) or BINARY
+@ Shape-Mesh approximation                  :	[10.0]%							// Threshold minimum surface & volume contribution per shape-facet
+
+@ Image-Sequence to skip                    :	[(0 : 10), 20]
+
+@ Up-sides'    polygon exclude for images   :	[(0 : 10), 20]
+@ Down-sides'  polygon exclude for images   :	[(0 : 10), 20]
+@ Left-sides'  polygon exclude for images   :	[(0 : 10), 20]
+@ Right-sides' polygon exclude for images   :	[(0 : 10), 20]
+
+***** **** **** **** **** **** **** *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
+
+|||||||| ABSORPTION  CORRECTION ||||||||	|||||||||| |||||||||| |||||||||| |||||||||| ||||||||||	//
+
+@ Estimation algorithm                      :	[Any]							// None/Any/Analytic/Discrete/Discrete/MonteCarlo/Beam_MC
+
+@ Analytic solution _ Resolution            :	[0.0000]						// distance range of coincident verteces
+
+@ Discrete solution _ Lattice Step Number   :	[400]							// solution neglected for N <= 0
+@ Discrete solution _ Lattice Step Size     :	[0.0]							// solution neglected for S <= 0.0
+
+@ Monte Carlo solution _ Max # Iterations   :	[100000]
+@ Monte Carlo solution _ Convergence        :	[0.00]							// ****
+
+@ Instrument vs. Sample Reference Axes      :	[z,-y,x]						// reference axes metch, e.g. x->+x or x->-x
+@ Instrument vs. Sample Orientation         :	[-100.0,0.0,0.0]					// initial rotation (Euler Angles ZXZ)
+
+@ Reflections set data file-type            :	[IDL]							// TXT/IDL. plane txt/stabdard IDL
+@ Reflections set data files                :	[2]							// Number of files | full file paths
+						[D:\sxd0.int]
+						[D:\sxd1.int]
+
+@ Unit-cell elemental composition           :	[(Ca:2), (B:6), (O:18), (H:14)]				// List of pairs '(Cu:1.5)' separated by ','
+						
+
+***** **** **** **** **** **** **** *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+***** **** **** **** **** **** **** *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
+*****   LIST OF AVAILABLE FILTERS   *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
+***** **** **** **** **** **** **** *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
+
+  MSK: image-mask swap                      :	-							// -
+  MSK: image-mask exclude region            :	< y > < 0.0 0.5 > < 0.0 0.5>				// y/n. inside | Region-width l/h | Region-height l/h
+  MSK: image-mask include region            :	< y > < 0.0 0.5 > < 0.0 0.5>				// y/n. inside | Region-width l/h | Region-height l/h
+  MSK: image-mask expand                    :	< 1 >							// Box shell thicknes
+  MSK: image-mask contract                  :	< 1 >							// Box shell thicknes
+  MSK: image-mask average                   :	< 1 >							// Box shell thicknes
+  MSK: image-mask select via RGB color      :	< 0 0 0 > < 20 20 20 > < 20.0 >				// R,G,B color    | R,G,B range | RGB distance
+  MSK: image-mask via RGB color mismatch    :	< 0 0 0 > < 20 20 20 > < 20.0 >				// R,G,B mismatch | R,G,B range | RGB distance
+  MSK: image-mask via RGB color-set ellipse :	< 1.0 > < 0.0 0.5 > < 0.0 0.5> "./CuO_0.bmp"		// Scale | Region-width l/h | Region-height l/h | input image path
+  MSK: image-mask via RGB color-set palette :	< 1.0 > < 0.0 0.5 > < 0.0 0.5> < 27 > "./CuO_0.bmp"	// RGB distance| Region-width l/h | Region-height l/h | input image path | max number of colors
+  MSK: image-mask via RGB color-pick red    :	< 1.0 > < 20.0 >					// RGB distance (min) | min main-color
+  MSK: image-mask via RGB color-pick green  :	< 1.0 >	< 20.0 >					// RGB distance (min) | min main-color
+  MSK: image-mask via RGB color-pick blue   :	< 1.0 >	< 20.0 >					// RGB distance (min) | min main-color
+  MSK: image-mask via RGB color-pick gray   :	< 1.0 >							// RGB distance (max)
+  MSK: image-mask via RGB color-pick white  :	< 1.0 >							// RGB distance (max)
+  MSK: image-mask via RGB color-pick black  :	< 1.0 >							// RGB distance (max)
+
+  MSK: image-filter grayscale               :	-							// -
+  MSK: image-filter color-gradient scale    :	< 1.0 >							// scale factor
+  MSK: image-filter color-shift scale       :	< 1 1 0 > < 1.0 >					// scale factor
+  MSK: image-filter posterize               :	< 3 >							// Number of color chanels
+  MSK: image-filter identity                :	-							// -
+  MSK: image-filter sharpen                 :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter blure box (range 3)     :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter blure box (range 5)     :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter blure Gauss (range 3)   :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter blure Gauss (range 5)   :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter edge-detection soft     :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter edge-detection midium   :	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter edge-detection strong   :	< 1.0 >							// Scale(effect enhancement)
+
+  MSK: image-filter border enhance (range 3):	< 1.0 >							// Scale(effect enhancement)
+  MSK: image-filter border enhance (range 5):	< 1.0 >							// Scale(effect enhancement)
+
+***** **** **** **** **** **** **** *****	*** *** *** *** *** *** *** *** *** *** *** *** *** *** //
